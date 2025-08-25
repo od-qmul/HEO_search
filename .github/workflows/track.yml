@@ -1,0 +1,33 @@
+name: Track GitHub Downloads
+
+on:
+  schedule:
+    - cron: "0 23 * * *"   # run every day at 23:00 UTC
+  workflow_dispatch:       # allow manual runs too
+
+jobs:
+  run-tracker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - name: Install dependencies
+      run: pip install requests
+
+    - name: Run script
+      run: python track_downloads.py
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add daily_downloads.csv
+        git commit -m "Update downloads on $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+        git push
