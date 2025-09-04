@@ -5,11 +5,12 @@ on:
     - cron: "0 23 * * *"   # run every day at 23:00 UTC
   workflow_dispatch:       # allow manual runs too
 
+permissions:
+  contents: write   # 👈 needed to push changes
+
 jobs:
   run-tracker:
     runs-on: ubuntu-latest
-    permissions:
-    contents: write   # 👈 needed to push changes
 
     steps:
     - name: Checkout repo
